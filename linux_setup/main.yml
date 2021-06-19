@@ -17,6 +17,7 @@
       - ansible
       - quiterss
       - xclip
+      - vim
 
     photo_rec_url: "https://www.cgsecurity.org/testdisk-7.1.linux26-x86_64.tar.bz2"
 
