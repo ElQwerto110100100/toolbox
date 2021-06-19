@@ -7,6 +7,7 @@
       - 1password
       - postman
       - curl
+      - signal-desktop
 
     classic_apps:
       - code
@@ -104,6 +105,11 @@
             src: ./files/conky.desktop
             dest: ~/.config/autostart/conky.desktop
           tags: conky
+
+        - name: Set startup weather
+          copy: 
+            src: ./files/weather.desktop
+            dest: ~/.config/autostart/weather.desktop
 
         - name: Copy rss feed list
           copy:
