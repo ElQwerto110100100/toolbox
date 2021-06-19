@@ -6,6 +6,7 @@
       - knowte
       - 1password
       - postman
+      - curl
 
     classic_apps:
       - code
