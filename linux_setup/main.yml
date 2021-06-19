@@ -1,0 +1,40 @@
+- name: linux setup
+  hosts: localhost
+  become: yes
+  vars:
+    apps:
+      - discord
+      - knowte
+      - 1password
+      - postman
+
+    classic_apps:
+      - code
+      - android-studio
+
+    packages:
+      - git
+      - ansible
+      - quiterss
+
+  tasks:
+    - name: Install classic snaps
+      snap:
+        name: "{{ item }}"
+        classic: yes
+      loop: "{{  classic_apps }}"
+
+    - name: Install other snaps
+      snap:
+        name: "{{ item }}"
+      loop: "{{ apps }}"
+
+    - name: "Installing packages"
+      apt:
+        name: "{{ item }}"
+      loop: "{{ packages }}"
+
+    - name: "Get git toolbox"
+      git: 
+        repo: 'https://github.com/ElQwerto110100100/toolbox'
+        dest: ~/tools/
