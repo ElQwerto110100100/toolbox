@@ -1,5 +1,5 @@
 - name: linux setup
-  hosts: localhost
+  hosts: "{{ variable_host | localhost }}"
   vars:
     apps:
       - discord
