@@ -1,6 +1,5 @@
 - name: linux setup
   hosts: localhost
-  become: yes
   vars:
     apps:
       - discord
@@ -16,8 +15,30 @@
       - git
       - ansible
       - quiterss
+      - xclip
+
+    photo_rec_url: "https://www.cgsecurity.org/testdisk-7.1.linux26-x86_64.tar.bz2"
+
+    photo_rec_file_path: "~/Downloads/testdisk-7.1.linux26-x86_64.tar.bz2" 
+
+    github_url: "https://github.com/ElQwerto110100100/toolbox"
+
+    fav_theme: "Yaru-dark"
+
+    fav_toolbar: "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'code_code.desktop', 'org.gnome.Terminal.desktop', '1password_1password.desktop', 'install4j_a177y-BurpSuiteCommunity.desktop', 'discord_discord.desktop', 'gnome-control-center.desktop']"
 
   tasks:
+    - name: Update all packages to their latest version
+      apt:
+        name: "*"
+        state: latest
+      become: yes
+
+    - name: Upgrade the OS (apt-get dist-upgrade)
+      apt:
+        upgrade: dist
+      become: yes
+
     - name: Install classic snaps
       snap:
         name: "{{ item }}"
@@ -35,6 +56,29 @@
       loop: "{{ packages }}"
 
     - name: "Get git toolbox"
-      git: 
-        repo: 'https://github.com/ElQwerto110100100/toolbox'
-        dest: ~/tools/
+      git:
+        repo: "{{ github_url }}"
+        dest: ~/tools/linux_tools/
+
+    - name: "Get photorec and teskDisc.tar"
+      get_url:
+        url: "{{ photo_rec_url }}"
+        dest: "~/Downloads"
+
+    - name: "Unpack"
+      unarchive:
+        src: "{{ photo_rec_file_path }}"
+        dest: "~/tools/"
+        remote_src: yes
+
+    - name: "Remove file"
+      file:
+        state: absent
+        path: "{{ photo_rec_file_path }}"
+        
+    - name: "Set dark theme"
+      command: "gsettings set org.gnome.desktop.interface gtk-theme '{{ fav_theme }}'"
+    
+    - name: "Set favourite toolbar"
+      command: 'gsettings set org.gnome.shell favorite-apps "{{ fav_toolbar }}" ' 
+      tags: 'toolbar'
