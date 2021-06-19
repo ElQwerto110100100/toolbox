@@ -18,6 +18,7 @@
       - quiterss
       - xclip
       - vim
+      - conky-all
 
     photo_rec_url: "https://www.cgsecurity.org/testdisk-7.1.linux26-x86_64.tar.bz2"
 
@@ -59,7 +60,7 @@
         - name: "Get git toolbox"
           git:
             repo: "{{ github_url }}"
-            dest: ~/tools/linux_tools/
+            dest: ~/tools/linux_tools/          
       become: yes
 
     - name: non root tasks
@@ -91,3 +92,20 @@
         - name: "Set favourite toolbar"
           command: 'gsettings set org.gnome.shell favorite-apps "{{ fav_toolbar }}" ' 
           tags: 'toolbar'
+
+        - name: Set up cronky config
+          copy:
+            src: ./.files/conkyrc
+            dest: ~/.conkyrc
+          tags: conky
+
+        - name: Set startup task
+          copy: 
+            src: ./files/conky.desktop
+            dest: ~/.config/autostart/conky.desktop
+          tags: conky
+
+        - name: Copy rss feed list
+          copy:
+            src: ./files/mf-feeds.opml
+            dest: ~/Documents
