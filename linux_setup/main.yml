@@ -20,10 +20,7 @@
       - xclip
       - vim
       - conky-all
-
-    photo_rec_url: "https://www.cgsecurity.org/testdisk-7.1.linux26-x86_64.tar.bz2"
-
-    photo_rec_file_path: "~/Downloads/testdisk-7.1.linux26-x86_64.tar.bz2" 
+      - testdisk
 
     github_url: "https://github.com/ElQwerto110100100/toolbox"
 
@@ -66,26 +63,10 @@
 
     - name: non root tasks
       block:
-        - name: "Get photorec and teskDisc.tar"
-          get_url:
-            url: "{{ photo_rec_url }}"
-            dest: "~/Downloads"
-        
         - name: "Make tools dir"
           file:
             state: directory
             path: ~/tools
-
-        - name: "Unpack"
-          unarchive:
-            src: "{{ photo_rec_file_path }}"
-            dest: "~/tools/"
-            remote_src: yes
-
-        - name: "Remove file"
-          file:
-            state: absent
-            path: "{{ photo_rec_file_path }}"
             
         - name: "Set dark theme"
           command: "gsettings set org.gnome.desktop.interface gtk-theme '{{ fav_theme }}'"
