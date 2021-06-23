@@ -29,23 +29,23 @@
     fav_toolbar: "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'code_code.desktop', 'org.gnome.Terminal.desktop', '1password_1password.desktop', 'install4j_a177y-BurpSuiteCommunity.desktop', 'discord_discord.desktop', 'gnome-control-center.desktop']"
 
   tasks:
-    - name: Root Tasks
+    - name: "Root Tasks"
       block: 
-        - name: Update all packages to their latest version
+        - name: "Update all packages to their latest version"
           apt:
             name: "*"
             state: latest
 
-        - name: Upgrade the OS (apt-get dist-upgrade)
+        - name: "Upgrade the OS (apt-get dist-upgrade)"
           apt:
             upgrade: dist
 
-        - name: Install classic snaps
+        - name: "Install classic snaps"
           snap:
             name: "{{ item }}"
           loop: "{{  classic_apps }}"
 
-        - name: Install other snaps
+        - name: "Install other snaps"
           snap:
             name: "{{ item }}"
           loop: "{{ apps }}"
@@ -71,7 +71,7 @@
 
       become: yes
 
-    - name: non root tasks
+    - name: "non root tasks"
       block:
         - name: "Make tools dir"
           file:
@@ -85,32 +85,35 @@
           command: 'gsettings set org.gnome.shell favorite-apps "{{ fav_toolbar }}" ' 
           tags: 'toolbar'
 
-        - name: Set up cronky config
+        - name: "Set up cronky config"
           copy:
             src: ./files/.conkyrc
             dest: ~/.conkyrc
           tags: conky
 
-        - name: Set startup task
+        - name: "Set startup task"
           copy: 
             src: ./files/conky.desktop
             dest: ~/.config/autostart/conky.desktop
           tags: conky
 
-        - name: Set startup weather
+        - name: "Set startup weather"
           copy: 
             src: ./files/weather.desktop
             dest: ~/.config/autostart/weather.desktop
 
-        - name: Copy rss feed list
+        - name: "Copy rss feed list"
           copy:
-            src: ./files/mf-feeds.opml
+            src: ./files/my-feeds.opml
             dest: ~/Documents
-       - name: nvm
-         shell: >
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-         args:
-            :creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
 
-       - name: 'Install latest node'
-         command: 'nvm install node'
+        - name: "nvm"
+          shell: >
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+          args:
+            creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+        - name: "Import vim config"
+          copy: 
+            src: ./files/.vimrc
+            dest: ~/.vimrc
