@@ -6,7 +6,6 @@
       - knowte
       - 1password
       - postman
-      - curl
       - signal-desktop
 
     classic_apps:
@@ -21,6 +20,7 @@
       - vim
       - conky-all
       - testdisk
+      - curl
 
     github_url: "https://github.com/ElQwerto110100100/toolbox"
 
@@ -59,6 +59,16 @@
           git:
             repo: "{{ github_url }}"
             dest: ~/tools/linux_tools/          
+        - name: "Set 'sensible' vim config folder"
+          file: 
+            state: directory
+            path: ~/.vim/pack/tpope/start
+
+        - name: "Get 'sensible' vim congif repo"
+          git:
+            repo: "https://tpope.io/vim/sensible.git"
+            dest: ~/.vim/pack/tpope/start
+
       become: yes
 
     - name: non root tasks
@@ -77,7 +87,7 @@
 
         - name: Set up cronky config
           copy:
-            src: ./.files/conkyrc
+            src: ./files/.conkyrc
             dest: ~/.conkyrc
           tags: conky
 
@@ -96,3 +106,11 @@
           copy:
             src: ./files/mf-feeds.opml
             dest: ~/Documents
+       - name: nvm
+         shell: >
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+         args:
+            :creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+       - name: 'Install latest node'
+         command: 'nvm install node'
