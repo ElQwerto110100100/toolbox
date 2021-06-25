@@ -71,6 +71,7 @@
 
         - name: "Install homebrew"
           command: '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+          tags: homebrew
       become: yes
 
     - name: "non root tasks"
@@ -119,3 +120,18 @@
           copy: 
             src: ./files/.vimrc
             dest: ~/.vimrc
+
+        - name: "Install vim plugins and coc exstentions"
+          command: "vim -c :PlugInstall && vim -c ':source $MYVIMRC' && vim -c 'CocInstall -sync coc-json coc-html coc-tsserver coc-prettier coc-css|q'"
+
+        - name: "Add Homebrew to path"
+          shell: echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/bot/.profile 
+          tags: homebrew
+
+        - name: "add homebrew to path"
+          shell: eval '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'
+          tags: homebrew
+
+        - name: "download watchmen with homebrew"
+          shell: brew install watchman
+          
