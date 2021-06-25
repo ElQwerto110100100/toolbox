@@ -69,6 +69,8 @@
             repo: "https://tpope.io/vim/sensible.git"
             dest: ~/.vim/pack/tpope/start
 
+        - name: "Install homebrew"
+          command: '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
       become: yes
 
     - name: "non root tasks"
