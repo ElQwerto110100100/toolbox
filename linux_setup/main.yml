@@ -9,7 +9,6 @@
       - signal-desktop
 
     classic_apps:
-      - code
       - android-studio
 
     packages:
@@ -21,16 +20,25 @@
       - conky-all
       - testdisk
       - curl
+      - tldr
+      - zsh
+      - fonts-powerline
 
     github_url: "https://github.com/ElQwerto110100100/toolbox"
 
     fav_theme: "Yaru-dark"
 
-    fav_toolbar: "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'code_code.desktop', 'org.gnome.Terminal.desktop', '1password_1password.desktop', 'install4j_a177y-BurpSuiteCommunity.desktop', 'discord_discord.desktop', 'gnome-control-center.desktop']"
+    fav_toolbar: "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', '1password_1password.desktop', 'install4j_a177y-BurpSuiteCommunity.desktop', 'discord_discord.desktop', 'gnome-control-center.desktop']"
+
+  config_files: 
+    .conky: "~/.conkyrc"
+    conky.desktop: "~/.config/autostart/conky.desktop"
+    my-feeds.opml: "~/Documents"
+    weather.desktop: "~/.config/autostart/weather.desktop"
 
   tasks:
     - name: "Root Tasks"
-      block: 
+      block:
         - name: "Update all packages to their latest version"
           apt:
             name: "*"
@@ -54,21 +62,24 @@
           apt:
             name: "{{ item }}"
           loop: "{{ packages }}"
+          tags: vim
 
         - name: "Get git toolbox"
           git:
             repo: "{{ github_url }}"
-            dest: ~/tools/linux_tools/          
+            dest: ~/tools/linux_tools/
+
         - name: "Set 'sensible' vim config folder"
-          file: 
+          file:
             state: directory
             path: ~/.vim/pack/tpope/start
+          tags: vim
 
         - name: "Get 'sensible' vim congif repo"
           git:
             repo: "https://tpope.io/vim/sensible.git"
             dest: ~/.vim/pack/tpope/start
-
+          tags: vim
       become: yes
 
     - name: "non root tasks"
@@ -77,35 +88,13 @@
           file:
             state: directory
             path: ~/tools
-            
+
         - name: "Set dark theme"
           command: "gsettings set org.gnome.desktop.interface gtk-theme '{{ fav_theme }}'"
-        
+
         - name: "Set favourite toolbar"
-          command: 'gsettings set org.gnome.shell favorite-apps "{{ fav_toolbar }}" ' 
-          tags: 'toolbar'
-
-        - name: "Set up cronky config"
-          copy:
-            src: ./files/.conkyrc
-            dest: ~/.conkyrc
-          tags: conky
-
-        - name: "Set startup task"
-          copy: 
-            src: ./files/conky.desktop
-            dest: ~/.config/autostart/conky.desktop
-          tags: conky
-
-        - name: "Set startup weather"
-          copy: 
-            src: ./files/weather.desktop
-            dest: ~/.config/autostart/weather.desktop
-
-        - name: "Copy rss feed list"
-          copy:
-            src: ./files/my-feeds.opml
-            dest: ~/Documents
+          command: 'gsettings set org.gnome.shell favorite-apps "{{ fav_toolbar }}" '
+          tags: "toolbar"
 
         - name: "nvm"
           shell: >
@@ -114,9 +103,34 @@
             creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
 
         - name: "Import vim config"
-          copy: 
+          copy:
             src: ./files/.vimrc
             dest: ~/.vimrc
+          tags: vim
 
         - name: "Install vim plugins and coc exstentions"
           command: 'vim -c :PlugInstall && vim -c ":source $MYVIMRC" && vim -c "CocInstall -sync coc-json coc-html coc-tsserver coc-prettier coc-css|q"'
+
+        - name: "Installing Oh My Zsh"
+          shell: >
+            sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+        - name: "Install zsh auto surgesstions"
+          git:
+            repo: 'https://github.com/zsh-users/zsh-autosuggestions'
+            desx: "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+
+        - name: "Add fasd apt repo"
+          apt_repository:
+            repo: "ppa:aacebedo/fasd"
+        
+        - name: "install fasd"
+         apt:
+          name: "fasd"
+
+        - name: "config files"
+          copy:
+            src: "./files/{{ item.key }}"
+            dest: "{{ item.value }}"
+          with_dict: "{{ config_files  }}"
+

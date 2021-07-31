@@ -5,6 +5,7 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
+Plug 'preservim/nerdcommenter'
 Plug 'preservim/nerdtree'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'yuezk/vim-js'
@@ -14,17 +15,21 @@ Plug 'peitalin/vim-jsx-typescript'
 Plug 'morhetz/gruvbox'
 call plug#end()
 
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+nmap <leader>f  <Plug>(coc-format-selected)
+
+filetype plugin on
+autocmd FileType json syntax match Comment +\/\/.\+$+
+
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
 " Start NERDTree and put the cursor back in the other window.
-autocmd VimEnter * NERDTree | wincmd p
+" autocmd VimEnter * NERDTree | wincmd p
 
 autocmd vimenter * ++nested colorscheme gruvbox
 set background=dark
-
-command! Prettier :silent !prettier % --write
 
 nmap <silent> <A-Up> :wincmd k<CR>
 nmap <silent> <A-Down> :wincmd j<CR>
@@ -32,6 +37,7 @@ nmap <silent> <A-Left> :wincmd h<CR>
 nmap <silent> <A-Right> :wincmd l<CR>
 
 syntax on
+set tabstop=2
 set number
 set cursorline
 set showcmd
