@@ -30,11 +30,11 @@
 
     fav_toolbar: "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', '1password_1password.desktop', 'install4j_a177y-BurpSuiteCommunity.desktop', 'discord_discord.desktop', 'gnome-control-center.desktop']"
 
-  config_files: 
-    .conky: "~/.conkyrc"
-    conky.desktop: "~/.config/autostart/conky.desktop"
-    my-feeds.opml: "~/Documents"
-    weather.desktop: "~/.config/autostart/weather.desktop"
+    config_files: 
+      .conky: "~/.conkyrc"
+      conky.desktop: "~/.config/autostart/conky.desktop"
+      my-feeds.opml: "~/Documents"
+      weather.desktop: "~/.config/autostart/weather.desktop"
 
   tasks:
     - name: "Root Tasks"
@@ -108,8 +108,8 @@
             dest: ~/.vimrc
           tags: vim
 
-        - name: "Install vim plugins and coc exstentions"
-          command: 'vim -c :PlugInstall && vim -c ":source $MYVIMRC" && vim -c "CocInstall -sync coc-json coc-html coc-tsserver coc-prettier coc-css|q"'
+        #- name: "Install vim plugins and coc exstentions"
+        #command: 'vim -c :PlugInstall && vim -c ":source $MYVIMRC" && vim -c "CocInstall -sync coc-json coc-html coc-tsserver coc-prettier coc-css|q"'
 
         - name: "Installing Oh My Zsh"
           shell: >
@@ -125,8 +125,8 @@
             repo: "ppa:aacebedo/fasd"
         
         - name: "install fasd"
-         apt:
-          name: "fasd"
+          apt:
+            name: "fasd"
 
         - name: "config files"
           copy:
